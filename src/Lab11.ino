@@ -18,18 +18,21 @@ unsigned long lastPrintSample = 0;
 volatile bool positionInterrupt = false;
 uint8_t lastPos = 0;
 
-void setup() {
+void setup()
+{
 	Serial.begin(9600);
-  if (!Serial.isConnected()) {}
-  display.setup();
+	if (!Serial.isConnected())
+	{
+	}
+	display.setup();
 
 	attachInterrupt(WKP, positionInterruptHandler, RISING);
 
-display.setTextSize(1);
-  display.setTextColor(WHITE);
-  display.setCursor(0, 0);
-  display.display();
-	
+	display.setTextSize(1);
+	display.setTextColor(WHITE);
+	display.setCursor(0, 0);
+	display.display();
+
 	// Initialize sensors
 	LIS3DHConfig config;
 	config.setPositionInterrupt(16);
@@ -38,24 +41,29 @@ display.setTextSize(1);
 	Serial.printlnf("setupSuccess=%d", setupSuccess);
 }
 
-void loop() {
+void loop()
+{
 	LIS3DHSample sample;
-display.setTextSize(1);
-  display.setTextColor(WHITE);
-  display.setCursor(0, 0);
-	if (millis() - lastPrintSample >= PRINT_SAMPLE_PERIOD) {
+	display.setTextSize(1);
+	display.setTextColor(WHITE);
+	display.setCursor(0, 0);
+	if (millis() - lastPrintSample >= PRINT_SAMPLE_PERIOD)
+	{
 		lastPrintSample = millis();
-		if (accel.getSample(sample)) {
+		if (accel.getSample(sample))
+		{
 			display.clearDisplay();
-      display.println("X: " + String(sample.x));
-      display.println("Y: " + String(sample.y));
-      display.println("Z: " + String(sample.z));
+			display.println("X: " + String(sample.x));
+			display.println("Y: " + String(sample.y));
+			display.println("Z: " + String(sample.z));
 		}
-		else {
+		else
+		{
 			display.println("no sample");
 		}
 	}
-	if (positionInterrupt) {
+	if (positionInterrupt)
+	{
 		positionInterrupt = false;
 
 		// Test the position interrupt support. Normal result is 5.
@@ -63,15 +71,16 @@ display.setTextSize(1);
 		// 4: upside down
 		// 1 - 3: other orientations
 		uint8_t pos = accel.readPositionInterrupt();
-		if (pos != 0 && pos != lastPos) {
+		if (pos != 0 && pos != lastPos)
+		{
 			Serial.printlnf("pos=%d", pos);
 			lastPos = pos;
 		}
 	}
-  display.display();
+	display.display();
 }
 
-void positionInterruptHandler() {
+void positionInterruptHandler()
+{
 	positionInterrupt = true;
 }
-
